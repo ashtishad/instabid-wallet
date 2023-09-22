@@ -55,13 +55,13 @@ func InitDB(l *slog.Logger) *sql.DB {
 // If error happened during setting env variable, then logs error and exits application.
 func SanityCheck(l *slog.Logger) {
 	defaultEnvVars := map[string]string{
-		"API_HOST":  "127.0.0.1",
-		"API_PORT":  "8000",
-		"DB_USER":   "postgres",
-		"DB_PASSWD": "postgres",
-		"DB_HOST":   "127.0.0.1",
-		"DB_PORT":   "5432",
-		"DB_NAME":   "instabid",
+		"API_HOST":      "127.0.0.1",
+		"USER_API_PORT": "8000",
+		"DB_USER":       "postgres",
+		"DB_PASSWD":     "postgres",
+		"DB_HOST":       "127.0.0.1",
+		"DB_PORT":       "5432",
+		"DB_NAME":       "instabid",
 	}
 
 	for key, defaultValue := range defaultEnvVars {

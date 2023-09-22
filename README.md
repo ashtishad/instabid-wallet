@@ -28,21 +28,21 @@ microservices, domain-driven design, and hexagonal architecture.
 Change environment variables in Makefile, if empty then default values listed here will be loaded, check
 app_helpers.go -> SanityCheck()
 
-- API_HOST    `[IP Address of the machine]` : `127.0.0.1`
-- API_PORT    `[Port of the user api]` : `8000`
-- DB_USER     `[Database username]` : `postgres`
-- DB_PASSWD   `[Database password]`: `potgres`
-- DB_ADDR     `[IP address of the database]` : `127.0.0.1`
-- DB_PORT     `[Port of the database]` : `5432`
-- DB_NAME     `[Name of the database]` : `instabid`
+- API_HOST      `[IP Address of the machine]` : `127.0.0.1`
+- USER_API_PORT `[Port of the user api]` : `8000`
+- DB_USER       `[Database username]` : `postgres`
+- DB_PASSWD     `[Database password]`: `potgres`
+- DB_ADDR       `[IP address of the database]` : `127.0.0.1`
+- DB_PORT       `[Port of the database]` : `5432`
+- DB_NAME       `[Name of the database]` : `instabid`
 
 #### Postgres-Database-Setup
 
 * Run docker compose: Bring the container up with `docker compose up`. Configurations are in `compose.yaml` file.
 * (optional) Remove databases and volumes:
-  ```
+  ``` 
   docker compose down
-  docker volume rm instabid_postgresdata
+  docker volume rm instabid-wallet_data
   ```
 
 #### Run-the-application
@@ -57,6 +57,7 @@ app_helpers.go -> SanityCheck()
 ### Project Structure
 
 ```
+├── user-api                 <-- user-api microservice.
 ├── .github/workflows        <-- Github CI workflows(Build, Test, Lint).
 ├── config                   <-- Database initialization on docker compose.
 ├── db/migrations            <-- Postgres DB migrations scripts for golang-migrate.
