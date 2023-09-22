@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ashtishad/ecommerce/db/conn"
+	"github.com/ashtishad/instabid-wallet/db/conn"
 	"github.com/golang-migrate/migrate/v4"
 )
 
@@ -37,7 +37,7 @@ func InitDB(l *slog.Logger) *sql.DB {
 
 	m, err := migrate.New(
 		"file://db/migrations",
-		conn.GetDSNString(l).String(),
+		conn.GetDsnURL(l).String(),
 	)
 	if err != nil {
 		l.Error("error creating migration: %v", "err", err.Error())

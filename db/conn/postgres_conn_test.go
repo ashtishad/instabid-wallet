@@ -7,10 +7,10 @@ import (
 	"testing"
 )
 
-// TestGetDSNString tests the GetDSNString function that constructs a DSN string for database connection.
+// TestGetDsnURL tests the GetDsnURL function that constructs a DSN string for database connection.
 // uses slog library for logger with using default slog handler options.
 // It validates whether the function correctly composes the DSN string using environment variables.
-func TestGetDSNString(t *testing.T) {
+func TestGetDsnURL(t *testing.T) {
 	var (
 		dbUser   = "user"
 		dbPasswd = "password"
@@ -29,7 +29,7 @@ func TestGetDSNString(t *testing.T) {
 		dbUser, dbPasswd, dbAddr, dbPort, dbName)
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	result := GetDSNString(logger).String()
+	result := GetDsnURL(logger).String()
 
 	if result != expected {
 		t.Errorf("getDSNString() returned %s; expected %s", result, expected)

@@ -13,12 +13,11 @@ import (
 	"github.com/jackc/pgx/v5/stdlib"
 )
 
-// GetDSNString constructs a PostgreSQL Data Source Name (DSN) string using environment variables.
+// GetDsnURL constructs a PostgreSQL Data Source Name (DSN) URL using environment variables.
 // It sets the connection parameters such as user, password, host, port, database name, timezone, and SSL mode.
-// The resulting DSN string is in the format:
+// The resulting DSN URL is in the format:
 // "postgres://user:password@host:port/dbname?sslmode=disable&timezone=UTC"
-// Returns the constructed DSN string.
-func GetDSNString(l *slog.Logger) *url.URL {
+func GetDsnURL(l *slog.Logger) *url.URL {
 	portInt, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
 		l.Error("error converting port string to int", "err", err.Error())
@@ -41,8 +40,7 @@ func GetDSNString(l *slog.Logger) *url.URL {
 
 // GetDBClient creates a new database connection and returns it
 func GetDBClient(l *slog.Logger) *sql.DB {
-	dsn := GetDSNString(l)
-	connConfig, err := pgx.ParseConfig(dsn.String())
+	connConfig, err := pgx.ParseConfig(GetDsnURL(l).String())
 
 	if err != nil {
 		l.Error("parsing postgres URI", "err", err)
@@ -56,7 +54,7 @@ func GetDBClient(l *slog.Logger) *sql.DB {
 		os.Exit(1)
 	}
 
-	l.Info("successfully connected to database", "dsn", dsn)
+	l.Info("successfully connected to database", "dsn", connConfig.ConnString())
 
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)

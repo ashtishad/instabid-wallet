@@ -1,45 +1,11 @@
-# instabid-wallet
-
-A digital wallet with fast money transfer capabilities and a real-time commodity auction platform. Made with GoLang,
-microservices, domain-driven design, and hexagonal architecture.
+## instabid-wallet
 
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
-
-## About The Project
-
-A digital wallet with fast money transfer capabilities and a real-time commodity auction platform. Made with G
-
-
-<p align="right">(<a href="#instabid-wallet">back to top</a>)</p>
+A digital wallet with fast money transfer capabilities and a real-time commodity auction platform. Made with GoLang,
+microservices, domain-driven design, and hexagonal architecture.
 
 ### Built With
 
@@ -51,43 +17,89 @@ A digital wallet with fast money transfer capabilities and a real-time commodity
 ![apache-kafka][apache-kafka]
 ![github-actions][github-actions]
 
-<p align="right">(<a href="#instabid-wallet">back to top</a>)</p>
-
-
-
 <!-- GETTING STARTED -->
 
-## Getting Started
+### Getting Started
 
-### Prerequisites
+###### Clone using ssh protocol `git clone git@github.com:ashtishad/ecommerce.git`
 
-### Installation
+#### Environment-variables
 
-<p align="right">(<a href="#instabid-wallet">back to top</a>)</p>
+Change environment variables in Makefile, if empty then default values listed here will be loaded, check
+app_helpers.go -> SanityCheck()
 
+- API_HOST    `[IP Address of the machine]` : `127.0.0.1`
+- API_PORT    `[Port of the user api]` : `8000`
+- DB_USER     `[Database username]` : `postgres`
+- DB_PASSWD   `[Database password]`: `potgres`
+- DB_ADDR     `[IP address of the database]` : `127.0.0.1`
+- DB_PORT     `[Port of the database]` : `5432`
+- DB_NAME     `[Name of the database]` : `instabid`
 
+#### Postgres-Database-Setup
+
+* Run docker compose: Bring the container up with `docker compose up`. Configurations are in `compose.yaml` file.
+* (optional) Remove databases and volumes:
+  ```
+  docker compose down
+  docker volume rm instabid_postgresdata
+  ```
+
+#### Run-the-application
+
+* Run the application with `make run` command from project root. or, if you want to run it from IDE, please set
+  environment variables by executing commands mentioned in Makefile on your terminal.
+
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
+
+<!-- Project Structure -->
+
+### Project Structure
+
+```
+├── .github/workflows        <-- Github CI workflows(Build, Test, Lint).
+├── config                   <-- Database initialization on docker compose.
+├── db/migrations            <-- Postgres DB migrations scripts for golang-migrate.
+├── lib                      <-- Common setup, configs used across all services.
+├── compose.yaml             <-- Docker services setup(databases)
+├── golangci.yml             <-- Config for golangci-lint. 
+├── Makefile                 <-- Builds the whole app with exporting environment variables.
+├── main.go                  <-- Start all server concurrently, init logger, init db, env port check, graceful shutdown.
+├── readme.md                <-- Readme for the whole app.
+
+```
+
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
+
+<!-- Data Flow (Hexagonal architecture) -->
+
+### Data Flow (Hexagonal architecture)
+
+    Incoming : Client --(JSON)-> REST Handlers --(DTO)-> Service --(Domain Object)-> RepositoryDB
+
+    Outgoing : RepositoryDB --(Domain Object)-> Service --(DTO)-> REST Handlers --(JSON)-> Client
+
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
 
 <!-- CONTACT -->
 
-## Contact
+### Contact
 
 Ashef Tishad - [@ashef](https://www.linkedin.com/in/ashef/)
 
 Project Link: [https://github.com/ashtishad/instabid-wallet](https://github.com/ashtishad/instabid-wallet)
 
-<p align="right">(<a href="#instabid-wallet">back to top</a>)</p>
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
 
 <!-- Credits -->
 
-## Credits
+### Credits
 
 Readme template [Readme Template](https://github.com/othneildrew/Best-README-Template)
 
 Badges and Icons [Shields.io](https://shields.io/)
 
-<p align="right">(<a href="#instabid-wallet">back to top</a>)</p>
-
-
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
