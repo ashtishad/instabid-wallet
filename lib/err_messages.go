@@ -7,4 +7,6 @@ const (
 	ErrScanRow            = "failed to scan row"
 	ErrScanRows           = "failed to scan rows"
 	ErrUnexpectedDatabase = "unexpected database error"
+	ErrHashingPassword    = "unable to generate hashed password"
+	ErrUnexpected         = "unexpected server error"
 )

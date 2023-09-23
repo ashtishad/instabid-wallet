@@ -21,7 +21,9 @@ func NewUserRepoDB(db *sql.DB, l *slog.Logger) *UserRepoDB {
 	}
 }
 
-func (d *UserRepoDB) Insert(ctx context.Context, u *User) (*User, lib.APIError) {
+func (d *UserRepoDB) Insert(ctx context.Context, u User) (*User, lib.APIError) {
+	// ToDo: check username, email exists
+
 	sqlInsertUserReturnID := `INSERT INTO users (username, email, hashed_pass, status, role) VALUES ($1, $2, $3, $4, $5) RETURNING user_id`
 
 	tx, err := d.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
