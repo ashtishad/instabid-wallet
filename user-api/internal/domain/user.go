@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const (
@@ -21,7 +19,7 @@ const (
 
 type User struct {
 	ID         int64
-	UserID     uuid.UUID
+	UserID     string
 	UserName   string
 	Email      string
 	Status     string
