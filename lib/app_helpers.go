@@ -1,16 +1,21 @@
 package lib
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/ashtishad/instabid-wallet/db/conn"
 	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func InitServerConfig(portEnv string) *http.Server {
@@ -39,12 +44,13 @@ func InitDB(l *slog.Logger) *sql.DB {
 		"file://db/migrations",
 		conn.GetDsnURL(l).String(),
 	)
+
 	if err != nil {
-		l.Error("error creating migration: %v", "err", err.Error())
+		l.Error("error creating migration", "err", err.Error())
 	}
 
 	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		l.Error("error applying migration: %v", "err", err.Error())
+		l.Error("error applying migration", "err", err.Error())
 	}
 
 	return dbClient
@@ -74,4 +80,15 @@ func SanityCheck(l *slog.Logger) {
 			l.Warn(fmt.Sprintf("environment variable %s not defined. Setting to default: %s", key, defaultValue))
 		}
 	}
+}
+
+func GracefulShutdown(ctx context.Context, srv *http.Server, wg *sync.WaitGroup, serverName string) {
+	defer wg.Done()
+	log.Printf("Shutting down %s server...\n", serverName)
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Printf("Could not gracefully shutdown the %s server: %v\n", serverName, err)
+	}
+
+	log.Printf("%s server gracefully stopped\n", serverName)
 }
