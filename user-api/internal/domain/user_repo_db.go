@@ -70,6 +70,7 @@ func (d *UserRepoDB) findByUUID(ctx context.Context, uuid string) (*User, lib.AP
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, lib.NotFoundError("user not found by uuid")
 		}
+
 		return nil, lib.InternalServerError(lib.ErrUnexpectedDatabase, err)
 	}
 

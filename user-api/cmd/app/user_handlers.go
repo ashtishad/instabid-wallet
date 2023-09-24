@@ -22,9 +22,11 @@ func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
+
 	if gin.Mode() == gin.ReleaseMode {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, utils.TimeoutCreateUser)
+
 		defer cancel()
 	}
 
@@ -33,6 +35,7 @@ func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 		c.JSON(apiErr.Code(), gin.H{
 			"error": apiErr.Error(),
 		})
+
 		return
 	}
 
