@@ -7,6 +7,7 @@ import (
 	"github.com/ashtishad/instabid-wallet/lib"
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
 	"github.com/ashtishad/instabid-wallet/user-api/pkg/hashpass"
+	"github.com/ashtishad/instabid-wallet/user-api/pkg/utils"
 )
 
 type UserService interface {
@@ -23,6 +24,18 @@ func NewUserService(repo domain.UserRepository) *DefaultUserService {
 }
 
 func (s *DefaultUserService) NewUser(ctx context.Context, req domain.NewUserReqDTO) (*domain.UserRespDTO, lib.APIError) {
+	if apiErr := utils.ValidateCreateUserInput(req); apiErr != nil {
+		return nil, apiErr
+	}
+
+	if req.Status == "" {
+		req.Status = utils.UserStatusActive
+	}
+
+	if req.Role == "" {
+		req.Role = utils.UserRoleUser
+	}
+
 	hashedPass, err := hashpass.Generate(ctx, req.Password, s.l)
 	if err != nil {
 		return nil, err

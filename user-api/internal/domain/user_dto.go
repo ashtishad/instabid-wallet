@@ -5,19 +5,19 @@ import (
 )
 
 type UserRespDTO struct {
-	UserID    string    `json:"userId" binding:"required,len=36"`
-	UserName  string    `json:"userName" binding:"required,min=7,max=64"`
-	Email     string    `json:"email" binding:"required,email,max=128"`
-	Status    string    `json:"status" binding:"required,oneof=active inactive deleted"`
-	Role      string    `json:"role" binding:"required,oneof=user admin moderator merchant"`
+	UserID    string    `json:"userId" binding:"required"`
+	UserName  string    `json:"userName" binding:"required"`
+	Email     string    `json:"email" binding:"required"`
+	Status    string    `json:"status" binding:"required"`
+	Role      string    `json:"role" binding:"required"`
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 }
 
 type NewUserReqDTO struct {
-	UserName string `json:"userName" binding:"required,min=7,max=64"`
-	Password string `json:"password" binding:"required,min=8,max=32"`
-	Email    string `json:"email" binding:"required,email,max=128"`
-	Status   string `json:"status" binding:"omitempty,oneof=active inactive deleted"`
-	Role     string `json:"role" binding:"omitempty,oneof=user admin moderator merchant"`
+	UserName string `json:"userName" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Status   string `json:"status" binding:"_"`
+	Role     string `json:"role" binding:"_"`
 }
