@@ -24,7 +24,9 @@ func NewUserService(repo domain.UserRepository) *DefaultUserService {
 	return &DefaultUserService{repo: repo}
 }
 
-func (s *DefaultUserService) NewUser(ctx context.Context, req domain.NewUserReqDTO) (*domain.UserRespDTO, lib.APIError) {
+func (s *DefaultUserService) NewUser(
+	ctx context.Context, req domain.NewUserReqDTO,
+) (*domain.UserRespDTO, lib.APIError) {
 	if apiErr := utils.ValidateCreateUserInput(req); apiErr != nil {
 		return nil, apiErr
 	}

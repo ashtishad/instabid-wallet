@@ -76,7 +76,11 @@ func SanityCheck(l *slog.Logger) {
 	for key, defaultValue := range defaultEnvVars {
 		if os.Getenv(key) == "" {
 			if err := os.Setenv(key, defaultValue); err != nil {
-				l.Error(fmt.Sprintf("failed to set environment variable %s to default value %s. Exiting application.", key, defaultValue))
+				l.Error(fmt.Sprintf(
+					"failed to set environment variable %s to default value %s. Exiting application.",
+					key,
+					defaultValue,
+				))
 				os.Exit(1)
 			}
 
