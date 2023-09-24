@@ -95,7 +95,7 @@ func TestValidateCreateUserInput(t *testing.T) {
 				Role:     "alien",
 			},
 			wantErr: true,
-			errText: "invalid email, you entered invalid-email; password must be at least 8 characters long and no more than 32 characters; username must be between 7 and 64 characters long; status must be one of: active, inactive, deleted; role must be one of: user, admin, moderator, merchant",
+			errText: "invalid email, you entered invalid-email\npassword must be at least 8 characters long and no more than 32 characters\nusername must be between 7 and 64 characters long\nstatus must be one of: active, inactive, deleted\nrole must be one of: user, admin, moderator, merchant",
 		},
 	}
 

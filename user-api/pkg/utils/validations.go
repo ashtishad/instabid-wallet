@@ -1,13 +1,53 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/ashtishad/instabid-wallet/lib"
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
 )
+
+func validateEmail(email string) error {
+	if matched := regexp.MustCompile(EmailRegex).MatchString(email); !matched {
+		return fmt.Errorf("invalid email, you entered %s", email)
+	}
+
+	return nil
+}
+
+func validatePassword(password string) error {
+	if len(password) < 8 || len(password) > 32 {
+		return errors.New("password must be at least 8 characters long and no more than 32 characters")
+	}
+
+	return nil
+}
+
+func validateUserName(userName string) error {
+	if len(userName) < 7 || len(userName) > 64 {
+		return errors.New("username must be between 7 and 64 characters long")
+	}
+
+	return nil
+}
+
+func validateStatus(status string) error {
+	if matched := regexp.MustCompile(StatusRegex).MatchString(status); !matched && status != "" {
+		return errors.New("status must be one of: active, inactive, deleted")
+	}
+
+	return nil
+}
+
+func validateRole(role string) error {
+	if matched := regexp.MustCompile(RoleRegex).MatchString(role); !matched && role != "" {
+		return errors.New("role must be one of: user, admin, moderator, merchant")
+	}
+
+	return nil
+}
 
 // ValidateCreateUserInput validates the input dto for creating a new user with the following criteria:
 //   - Email: Must match the specified regex pattern (EmailRegex).
@@ -16,34 +56,31 @@ import (
 //   - Status: If provided, must be one of 'active', 'inactive', or 'deleted'.
 //   - Role: If provided, must be one of 'user', 'admin', 'moderator', or 'merchant'.
 func ValidateCreateUserInput(input domain.NewUserReqDTO) lib.APIError {
-	var errorMessages []string
+	var errs error
+	var err error
 
-	if matched := regexp.MustCompile(EmailRegex).MatchString(input.Email); !matched {
-		errorMessages = append(errorMessages, fmt.Sprintf("invalid email, you entered %s", input.Email))
+	if err = validateEmail(input.Email); err != nil {
+		errs = errors.Join(errs, err)
 	}
 
-	if len(input.Password) < 8 || len(input.Password) > 32 {
-		errorMessages = append(errorMessages, "password must be at least 8 characters long and no more than 32 characters")
+	if err = validatePassword(input.Password); err != nil {
+		errs = errors.Join(errs, err)
 	}
 
-	if len(input.UserName) < 7 || len(input.UserName) > 64 {
-		errorMessages = append(errorMessages, "username must be between 7 and 64 characters long")
+	if err = validateUserName(input.UserName); err != nil {
+		errs = errors.Join(errs, err)
 	}
 
-	if input.Status != "" {
-		if matched := regexp.MustCompile(StatusRegex).MatchString(input.Status); !matched {
-			errorMessages = append(errorMessages, "status must be one of: active, inactive, deleted")
-		}
+	if err = validateStatus(input.Status); err != nil {
+		errs = errors.Join(errs, err)
 	}
 
-	if input.Role != "" {
-		if matched := regexp.MustCompile(RoleRegex).MatchString(input.Role); !matched {
-			errorMessages = append(errorMessages, "role must be one of: user, admin, moderator, merchant")
-		}
+	if err = validateRole(input.Role); err != nil {
+		errs = errors.Join(errs, err)
 	}
 
-	if len(errorMessages) > 0 {
-		return lib.BadRequestError(strings.Join(errorMessages, "; "))
+	if errs != nil {
+		return lib.BadRequestError(errs.Error())
 	}
 
 	return nil
