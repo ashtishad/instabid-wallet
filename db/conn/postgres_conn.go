@@ -27,7 +27,7 @@ func GetDsnURL(l *slog.Logger) *url.URL {
 	dsn := url.URL{
 		Scheme: "postgres",
 		User:   url.UserPassword(os.Getenv("DB_USER"), os.Getenv("DB_PASSWD")),
-		Host:   fmt.Sprintf("%s:%d", os.Getenv("DB_ADDR"), portInt),
+		Host:   fmt.Sprintf("%s:%d", os.Getenv("DB_HOST"), portInt),
 		Path:   os.Getenv("DB_NAME"),
 	}
 	q := dsn.Query()

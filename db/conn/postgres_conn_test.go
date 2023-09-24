@@ -14,19 +14,19 @@ func TestGetDsnURL(t *testing.T) {
 	var (
 		dbUser   = "user"
 		dbPasswd = "password"
-		dbAddr   = "host"
+		dbHost   = "host"
 		dbPort   = "5432"
 		dbName   = "dbname"
 	)
 
 	_ = os.Setenv("DB_USER", dbUser)
 	_ = os.Setenv("DB_PASSWD", dbPasswd)
-	_ = os.Setenv("DB_ADDR", dbAddr)
+	_ = os.Setenv("DB_HOST", dbHost)
 	_ = os.Setenv("DB_PORT", dbPort)
 	_ = os.Setenv("DB_NAME", dbName)
 
 	expected := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&timezone=UTC",
-		dbUser, dbPasswd, dbAddr, dbPort, dbName)
+		dbUser, dbPasswd, dbHost, dbPort, dbName)
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	result := GetDsnURL(logger).String()
@@ -35,9 +35,11 @@ func TestGetDsnURL(t *testing.T) {
 		t.Errorf("getDSNString() returned %s; expected %s", result, expected)
 	}
 
-	_ = os.Unsetenv("DB_PORT")
-	_ = os.Unsetenv("DB_USER")
-	_ = os.Unsetenv("DB_PASSWD")
-	_ = os.Unsetenv("DB_ADDR")
-	_ = os.Unsetenv("DB_NAME")
+	t.Cleanup(func() {
+		_ = os.Unsetenv("DB_PORT")
+		_ = os.Unsetenv("DB_USER")
+		_ = os.Unsetenv("DB_PASSWD")
+		_ = os.Unsetenv("DB_HOST")
+		_ = os.Unsetenv("DB_NAME")
+	})
 }

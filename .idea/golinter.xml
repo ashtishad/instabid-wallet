@@ -3,5 +3,40 @@
   <component name="GoLinterSettings">
     <option name="concurrency" value="4" />
     <option name="customConfigFile" value="$PROJECT_DIR$/golangci.yml" />
+    <option name="enabledLinters">
+      <list>
+        <option value="exportloopref" />
+        <option value="funlen" />
+        <option value="cyclop" />
+        <option value="gocritic" />
+        <option value="goconst" />
+        <option value="errcheck" />
+        <option value="forcetypeassert" />
+        <option value="nilnil" />
+        <option value="ineffassign" />
+        <option value="wsl" />
+        <option value="nakedret" />
+        <option value="revive" />
+        <option value="prealloc" />
+        <option value="durationcheck" />
+        <option value="staticcheck" />
+        <option value="dupl" />
+        <option value="govet" />
+        <option value="errname" />
+        <option value="tagliatelle" />
+        <option value="wrapcheck" />
+        <option value="lll" />
+        <option value="asciicheck" />
+        <option value="bodyclose" />
+        <option value="gosec" />
+        <option value="tagalign" />
+        <option value="unused" />
+        <option value="stylecheck" />
+        <option value="goimports" />
+        <option value="gosimple" />
+      </list>
+    </option>
+    <option name="goLinterExe" value="/usr/local/bin/golangci-lint" />
+    <option name="linterSelected" value="true" />
   </component>
 </project>

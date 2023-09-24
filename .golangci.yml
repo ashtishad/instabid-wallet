@@ -50,6 +50,8 @@ linters-settings:
     max-complexity: 14
     package-average: 6.0
     skip-tests: true
+  lll:
+    max-line:
   nilnil:
     # Checks that there is no simultaneous return of `nil` error and an invalid value.
     checked-types:

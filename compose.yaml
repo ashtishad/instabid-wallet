@@ -3,9 +3,9 @@ services:
     image: postgres:15.4-alpine
     ports:
       - "127.0.0.1:5432:5432"
-    container_name: postgres
+    container_name: pg
     volumes:
-      - postgresdata:/var/lib/postgresql/data
+      - data:/var/lib/postgresql/data
       - ./config/initdb:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: postgres
@@ -14,7 +14,7 @@ services:
     restart: "unless-stopped"
 
 volumes:
-  postgresdata:
+  data:
     driver: local
 
 networks:
