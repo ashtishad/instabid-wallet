@@ -18,6 +18,9 @@ type NewUserReqDTO struct {
 	UserName string `json:"userName" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	Email    string `json:"email" binding:"required"`
-	Status   string `json:"status" binding:"_"`
-	Role     string `json:"role" binding:"_"`
+
+	// default value will be set if empty
+	// status= "active" role = "user"
+	Status string `json:"status" binding:"-"`
+	Role   string `json:"role" binding:"-"`
 }

@@ -22,8 +22,13 @@ func NewUserRepoDB(db *sql.DB, l *slog.Logger) *UserRepoDB {
 	}
 }
 
+// Insert adds a new user to the database and returns the inserted User object.
+// The method performs a transaction with isolation level read committed,
+// then checks for existing usernames and emails, returned 409 conflict error if exists,
+// Returns 404 or 500 if other error occurs.
 func (d *UserRepoDB) Insert(ctx context.Context, u User) (*User, lib.APIError) {
-	sqlInsertUserReturnID := `INSERT INTO users (username, email, hashed_pass, status, role) VALUES ($1, $2, $3, $4, $5) RETURNING user_id`
+	sqlInsertUserReturnID := `INSERT INTO users (username, email, hashed_pass, status, role) 
+							  VALUES ($1, $2, $3, $4, $5) RETURNING user_id`
 
 	tx, err := d.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -51,8 +56,11 @@ func (d *UserRepoDB) Insert(ctx context.Context, u User) (*User, lib.APIError) {
 	return d.findByUUID(ctx, u.UserID)
 }
 
+// findByUUID retrieves a user by their UUID from the database.
+// If the user is not found, a NotFoundError is returned, Any other errors result in an InternalServerError.
 func (d *UserRepoDB) findByUUID(ctx context.Context, uuid string) (*User, lib.APIError) {
-	sqlFindByUUID := `SELECT user_id, username, email, status, role, created_at, updated_at from users where user_id= $1`
+	sqlFindByUUID := `SELECT user_id, username, email, status, role, created_at, updated_at 
+					 from users where user_id= $1`
 
 	var u User
 	row := d.db.QueryRowContext(ctx, sqlFindByUUID, uuid)
@@ -96,6 +104,8 @@ func (d *UserRepoDB) checkExists(ctx context.Context, email, username string) li
 	}
 }
 
+// rollbackOnError attempts to roll back the transaction if an error is present.
+// It logs a warning if the rollback itself fails.
 func rollbackOnError(tx *sql.Tx, err *error, l *slog.Logger) {
 	if *err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {

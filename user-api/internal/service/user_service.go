@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"log/slog"
+	"strings"
 
 	"github.com/ashtishad/instabid-wallet/lib"
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
@@ -42,8 +43,8 @@ func (s *DefaultUserService) NewUser(ctx context.Context, req domain.NewUserReqD
 	}
 
 	u := domain.User{
-		UserName:   req.UserName,
-		Email:      req.Email,
+		UserName:   strings.ToLower(req.UserName),
+		Email:      strings.ToLower(req.Email),
 		Status:     req.Status,
 		Role:       req.Role,
 		HashedPass: hashedPass,

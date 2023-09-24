@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
 	"github.com/ashtishad/instabid-wallet/user-api/internal/service"
+	"github.com/ashtishad/instabid-wallet/user-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +24,7 @@ func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	if gin.Mode() == gin.ReleaseMode {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, 200*time.Millisecond)
+		ctx, cancel = context.WithTimeout(ctx, utils.TimeoutCreateUser)
 		defer cancel()
 	}
 
