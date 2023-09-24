@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
 	"github.com/ashtishad/instabid-wallet/user-api/internal/service"
@@ -12,7 +13,7 @@ import (
 )
 
 func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(os.Getenv("GIN_MODE"))
 
 	var r = gin.New()
 	srv.Handler = r

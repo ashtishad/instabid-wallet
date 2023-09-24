@@ -17,14 +17,18 @@ type UserHandlers struct {
 func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 	var newUserRequest domain.NewUserReqDTO
 	if err := c.ShouldBindJSON(&newUserRequest); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	timeoutCtx, cancel := context.WithTimeout(c.Request.Context(), 500*time.Millisecond)
-	defer cancel()
+	ctx := c.Request.Context()
+	if gin.Mode() == gin.ReleaseMode {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, 200*time.Millisecond)
+		defer cancel()
+	}
 
-	res, apiErr := uh.s.NewUser(timeoutCtx, newUserRequest)
+	res, apiErr := uh.s.NewUser(ctx, newUserRequest)
 	if apiErr != nil {
 		c.JSON(apiErr.Code(), gin.H{
 			"error": apiErr.Error(),

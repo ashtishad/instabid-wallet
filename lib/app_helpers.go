@@ -68,6 +68,7 @@ func SanityCheck(l *slog.Logger) {
 		"DB_HOST":       "127.0.0.1",
 		"DB_PORT":       "5432",
 		"DB_NAME":       "instabid",
+		"GIN_MODE":      "debug",
 	}
 
 	for key, defaultValue := range defaultEnvVars {
