@@ -21,7 +21,7 @@ microservices, domain-driven design, and hexagonal architecture.
 
 ### Getting Started
 
-###### Clone using ssh protocol `git clone git@github.com:ashtishad/ecommerce.git`
+###### Clone using ssh protocol `git@github.com:ashtishad/instabid-wallet.git`
 
 #### Environment-variables
 
@@ -31,10 +31,11 @@ app_helpers.go -> SanityCheck()
 - API_HOST      `[IP Address of the machine]` : `127.0.0.1`
 - USER_API_PORT `[Port of the user api]` : `8000`
 - DB_USER       `[Database username]` : `postgres`
-- DB_PASSWD     `[Database password]`: `potgres`
+- DB_PASSWD     `[Database password]`: `postgres`
 - DB_ADDR       `[IP address of the database]` : `127.0.0.1`
 - DB_PORT       `[Port of the database]` : `5432`
 - DB_NAME       `[Name of the database]` : `instabid`
+- GIN_MODE      `[Name of the gin mode]` : `debug`
 
 #### Postgres-Database-Setup
 
@@ -59,7 +60,7 @@ app_helpers.go -> SanityCheck()
 ```
 ├── user-api                 <-- user-api microservice.
 ├── .github/workflows        <-- Github CI workflows(Build, Test, Lint).
-├── config                   <-- Database initialization on docker compose.
+├── config                   <-- Database initialization script with docker compose.
 ├── db/migrations            <-- Postgres DB migrations scripts for golang-migrate.
 ├── lib                      <-- Common setup, configs used across all services.
 ├── compose.yaml             <-- Docker services setup(databases)
@@ -124,13 +125,9 @@ Badges and Icons [Shields.io](https://shields.io/)
 
 [go]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 
-[go-url]: #
-
 <!-- Database -->
 
 [postgres]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
-
-[postgres-url]: #
 
 [elastic-search]: https://img.shields.io/badge/Elastic_Search-005571?style=for-the-badge&logo=elasticsearch&logoColor=white
 
