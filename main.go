@@ -27,8 +27,6 @@ func main() {
 		}
 	}(dbClient)
 
-	// generate.Users(dbClient, l, 1000)
-
 	userServer := lib.InitServerConfig("USER_API_PORT")
 
 	wg.Add(1)
