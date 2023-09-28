@@ -1,6 +1,6 @@
 BEGIN;
 
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users cascade;
 
 DROP TYPE IF EXISTS user_status;
 DROP TYPE IF EXISTS user_roles;

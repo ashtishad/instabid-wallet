@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -14,4 +15,13 @@ type User struct {
 	HashedPass string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+type UserProfile struct {
+	FirstName string
+	LastName  string
+	Gender    string
+	Address   sql.NullString
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

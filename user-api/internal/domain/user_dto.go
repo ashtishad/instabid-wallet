@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -23,4 +24,20 @@ type NewUserReqDTO struct {
 	// status= "active" role = "user"
 	Status string `binding:"-" json:"status"`
 	Role   string `binding:"-" json:"role"`
+}
+
+type UserProfileRespDTO struct {
+	FirstName string         `binding:"required" json:"firstName"`
+	LastName  string         `binding:"required" json:"lastName"`
+	Gender    string         `binding:"required" json:"gender"`
+	Address   sql.NullString `binding:"-"        json:"address,omitempty"`
+	CreatedAt time.Time      `binding:"-"        json:"createdAt"`
+	UpdatedAt time.Time      `binding:"-"        json:"updatedAt"`
+}
+
+type NewUserProfileReqDTO struct {
+	FirstName string         `binding:"required" json:"firstName"`
+	LastName  string         `binding:"required" json:"lastName"`
+	Gender    string         `binding:"required" json:"gender"`
+	Address   sql.NullString `binding:"-"        json:"address,omitempty"`
 }
