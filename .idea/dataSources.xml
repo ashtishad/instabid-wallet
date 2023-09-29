@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="instabid@127.0.0.1" uuid="9eeb2e36-a68c-4fa3-8bb7-41529a6aff9e">
+    <data-source source="LOCAL" name="instabid@127.0.0.1" uuid="f4851167-015c-49fa-a851-a10361ffa4a5">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

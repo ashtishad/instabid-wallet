@@ -24,3 +24,19 @@ type NewUserReqDTO struct {
 	Status string `binding:"-" json:"status"`
 	Role   string `binding:"-" json:"role"`
 }
+
+type ProfileRespDTO struct {
+	FirstName string    `binding:"required" json:"firstName"`
+	LastName  string    `binding:"required" json:"lastName"`
+	Gender    string    `binding:"required" json:"gender"`
+	Address   string    `binding:"-"        json:"address,omitempty"`
+	CreatedAt time.Time `binding:"-"        json:"createdAt"`
+	UpdatedAt time.Time `binding:"-"        json:"updatedAt"`
+}
+
+type NewProfileReqDTO struct {
+	FirstName string `binding:"required" json:"firstName"`
+	LastName  string `binding:"required" json:"lastName"`
+	Gender    string `binding:"required" json:"gender"`
+	Address   string `binding:"-"        json:"address,omitempty"`
+}

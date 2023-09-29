@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"log/slog"
 	"strings"
 
@@ -13,6 +14,7 @@ import (
 
 type UserService interface {
 	NewUser(ctx context.Context, req domain.NewUserReqDTO) (*domain.UserRespDTO, lib.APIError)
+	NewProfile(ctx context.Context, uuid string, req domain.NewProfileReqDTO) (*domain.ProfileRespDTO, lib.APIError)
 }
 
 type DefaultUserService struct {
@@ -20,13 +22,12 @@ type DefaultUserService struct {
 	l    *slog.Logger
 }
 
-func NewUserService(repo domain.UserRepository) *DefaultUserService {
-	return &DefaultUserService{repo: repo}
+func NewUserService(repo domain.UserRepository, l *slog.Logger) *DefaultUserService {
+	return &DefaultUserService{repo: repo, l: l}
 }
 
-func (s *DefaultUserService) NewUser(
-	ctx context.Context, req domain.NewUserReqDTO,
-) (*domain.UserRespDTO, lib.APIError) {
+func (s *DefaultUserService) NewUser(ctx context.Context,
+	req domain.NewUserReqDTO) (*domain.UserRespDTO, lib.APIError) {
 	if apiErr := utils.ValidateCreateUserInput(req); apiErr != nil {
 		return nil, apiErr
 	}
@@ -68,4 +69,43 @@ func (s *DefaultUserService) NewUser(
 	}
 
 	return &userDTO, err
+}
+
+func (s *DefaultUserService) NewProfile(ctx context.Context, uuid string,
+	req domain.NewProfileReqDTO) (*domain.ProfileRespDTO, lib.APIError) {
+	if apiErr := utils.ValidateCreateProfileInput(req); apiErr != nil {
+		return nil, apiErr
+	}
+
+	up := domain.Profile{
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Gender:    req.Gender,
+	}
+
+	if req.Address != "" {
+		up.Address = sql.NullString{
+			String: req.Address,
+			Valid:  true,
+		}
+	}
+
+	res, apiErr := s.repo.InsertProfile(ctx, uuid, up)
+	if apiErr != nil {
+		return nil, apiErr
+	}
+
+	resDto := domain.ProfileRespDTO{
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		Gender:    res.Gender,
+		CreatedAt: res.CreatedAt,
+		UpdatedAt: res.UpdatedAt,
+	}
+
+	if res.Address.Valid {
+		resDto.Address = res.Address.String
+	}
+
+	return &resDto, nil
 }
