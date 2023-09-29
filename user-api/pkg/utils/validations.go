@@ -85,3 +85,71 @@ func ValidateCreateUserInput(input domain.NewUserReqDTO) lib.APIError {
 
 	return nil
 }
+
+// ValidateFirstName validates first name
+func validateFirstName(firstName string) error {
+	if matched := regexp.MustCompile(`^[a-zA-Z]{1,64}$`).MatchString(firstName); !matched {
+		return errors.New("first name must be alphabetic and between 1 and 64 characters long")
+	}
+
+	return nil
+}
+
+// ValidateLastName validates last name
+func validateLastName(lastName string) error {
+	if matched := regexp.MustCompile(`^[a-zA-Z\s]{1,128}$`).MatchString(lastName); !matched {
+		return errors.New("last name must be alphabetic, may contain spaces, and be between 1 and 128 characters long")
+	}
+
+	return nil
+}
+
+// ValidateGender validates gender
+func validateGender(gender string) error {
+	if matched := regexp.MustCompile(`^(male|female|other)$`).MatchString(gender); !matched {
+		return errors.New("gender must be one of: male, female, other")
+	}
+
+	return nil
+}
+
+// ValidateAddress validates address (optional field)
+func validateAddress(address string) error {
+	if len(address) > 256 {
+		return errors.New("address cannot exceed 256 characters")
+	}
+
+	return nil
+}
+
+// ValidateCreateProfileInput validates the input dto for creating a new profile with the following criteria:
+//   - FirstName: Must be alphabetic and between 1 and 64 characters long.
+//   - LastName: Must be alphabetic, may contain spaces, and be between 1 and 128 characters long.
+//   - Gender: Must be one of 'male', 'female', or 'other'.
+//   - Address: If provided, must not exceed 256 characters.
+func ValidateCreateProfileInput(input domain.NewProfileReqDTO) lib.APIError {
+	var errs error
+	var err error
+
+	if err = validateFirstName(input.FirstName); err != nil {
+		errs = errors.Join(errs, err)
+	}
+
+	if err = validateLastName(input.LastName); err != nil {
+		errs = errors.Join(errs, err)
+	}
+
+	if err = validateGender(input.Gender); err != nil {
+		errs = errors.Join(errs, err)
+	}
+
+	if err = validateAddress(input.Address); err != nil {
+		errs = errors.Join(errs, err)
+	}
+
+	if errs != nil {
+		return lib.BadRequestError(errs.Error())
+	}
+
+	return nil
+}

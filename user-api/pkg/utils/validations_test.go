@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
@@ -109,6 +110,102 @@ func TestValidateCreateUserInput(t *testing.T) {
 
 			if gotErr != nil && gotErr.Error() != tt.errText {
 				t.Errorf("ValidateCreateUserInput() got error text = %v, want %v", gotErr.Error(), tt.errText)
+			}
+		})
+	}
+}
+
+// TestValidateCreateProfileInput tests ValidateCreateProfileInput function.
+func TestValidateCreateProfileInput(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   domain.NewProfileReqDTO
+		wantErr bool
+		errText string
+	}{
+		{
+			name: "Valid input",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John",
+				LastName:  "Doe",
+				Gender:    "male",
+				Address:   "1234 Elm St",
+			},
+			wantErr: false,
+		},
+		{
+			name: "Invalid first name",
+			input: domain.NewProfileReqDTO{
+				FirstName: "J@hn",
+				LastName:  "Doe Susan",
+				Gender:    "male",
+			},
+			wantErr: true,
+			errText: "first name must be alphabetic and between 1 and 64 characters long",
+		},
+		{
+			name: "Invalid last name",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John",
+				LastName:  "D@e Trixy",
+				Gender:    "male",
+			},
+			wantErr: true,
+			errText: "last name must be alphabetic, may contain spaces, and be between 1 and 128 characters long",
+		},
+		{
+			name: "Invalid gender",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John",
+				LastName:  "Doe",
+				Gender:    "alien",
+			},
+			wantErr: true,
+			errText: "gender must be one of: male, female, other",
+		},
+		{
+			name: "Valid Input and Empty address",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John",
+				LastName:  "Doe",
+				Gender:    "male",
+				Address:   "",
+			},
+			wantErr: false,
+		},
+		{
+			name: "Address too long",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John",
+				LastName:  "Doe",
+				Gender:    "male",
+				Address:   strings.Repeat("a", 257),
+			},
+			wantErr: true,
+			errText: "address cannot exceed 256 characters",
+		},
+		{
+			name: "Multiple errors",
+			input: domain.NewProfileReqDTO{
+				FirstName: "John ",
+				LastName:  "D@e",
+				Gender:    "alien",
+			},
+			wantErr: true,
+			errText: "first name must be alphabetic and between 1 and 64 characters long\nlast name must be alphabetic, may contain spaces, and be between 1 and 128 characters long\ngender must be one of: male, female, other",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotErr := ValidateCreateProfileInput(tt.input)
+			if (gotErr != nil) != tt.wantErr {
+				t.Errorf("ValidateCreateProfileInput() error = %v, wantErr %v", gotErr, tt.wantErr)
+				return
+			}
+
+			if gotErr != nil && gotErr.Error() != tt.errText {
+				t.Errorf("ValidateCreateProfileInput() got error text = %v, want %v", gotErr.Error(), tt.errText)
 			}
 		})
 	}
