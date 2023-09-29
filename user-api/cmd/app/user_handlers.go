@@ -14,7 +14,7 @@ type UserHandlers struct {
 	s service.UserService
 }
 
-func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
+func (uh *UserHandlers) CreateUserHandler(c *gin.Context) {
 	var newUserRequest domain.NewUserReqDTO
 	if err := c.ShouldBindJSON(&newUserRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,7 +44,7 @@ func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 	})
 }
 
-func (uh *UserHandlers) NewUserProfileHandler(c *gin.Context) {
+func (uh *UserHandlers) CreateUserProfileHandler(c *gin.Context) {
 	userID := c.Param("user_id")
 	if userID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user id can't be empty"})

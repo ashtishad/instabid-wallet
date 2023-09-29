@@ -38,7 +38,7 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 func setUsersAPIRoutes(r *gin.Engine, uh UserHandlers) {
 	userRoutes := r.Group("/users")
 	{
-		userRoutes.POST("", uh.NewUserHandler)
-		userRoutes.POST("/:user_id", uh.NewUserProfileHandler)
+		userRoutes.POST("", uh.CreateUserHandler)
+		userRoutes.POST("/:user_id", uh.CreateUserProfileHandler)
 	}
 }
