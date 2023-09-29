@@ -9,46 +9,6 @@ import (
 	"github.com/ashtishad/instabid-wallet/user-api/internal/domain"
 )
 
-func validateEmail(email string) error {
-	if matched := regexp.MustCompile(EmailRegex).MatchString(email); !matched {
-		return fmt.Errorf("invalid email, you entered %s", email)
-	}
-
-	return nil
-}
-
-func validatePassword(password string) error {
-	if len(password) < 8 || len(password) > 32 {
-		return errors.New("password must be at least 8 characters long and no more than 32 characters")
-	}
-
-	return nil
-}
-
-func validateUserName(userName string) error {
-	if len(userName) < 7 || len(userName) > 64 {
-		return errors.New("username must be between 7 and 64 characters long")
-	}
-
-	return nil
-}
-
-func validateStatus(status string) error {
-	if matched := regexp.MustCompile(StatusRegex).MatchString(status); !matched && status != "" {
-		return errors.New("status must be one of: active, inactive, deleted")
-	}
-
-	return nil
-}
-
-func validateRole(role string) error {
-	if matched := regexp.MustCompile(RoleRegex).MatchString(role); !matched && role != "" {
-		return errors.New("role must be one of: user, admin, moderator, merchant")
-	}
-
-	return nil
-}
-
 // ValidateCreateUserInput validates the input dto for creating a new user with the following criteria:
 //   - Email: Must match the specified regex pattern (EmailRegex).
 //   - Password: Must be at least 8 characters long and no more than 32 characters.
@@ -86,42 +46,6 @@ func ValidateCreateUserInput(input domain.NewUserReqDTO) lib.APIError {
 	return nil
 }
 
-// ValidateFirstName validates first name
-func validateFirstName(firstName string) error {
-	if matched := regexp.MustCompile(`^[a-zA-Z]{1,64}$`).MatchString(firstName); !matched {
-		return errors.New("first name must be alphabetic and between 1 and 64 characters long")
-	}
-
-	return nil
-}
-
-// ValidateLastName validates last name
-func validateLastName(lastName string) error {
-	if matched := regexp.MustCompile(`^[a-zA-Z\s]{1,128}$`).MatchString(lastName); !matched {
-		return errors.New("last name must be alphabetic, may contain spaces, and be between 1 and 128 characters long")
-	}
-
-	return nil
-}
-
-// ValidateGender validates gender
-func validateGender(gender string) error {
-	if matched := regexp.MustCompile(`^(male|female|other)$`).MatchString(gender); !matched {
-		return errors.New("gender must be one of: male, female, other")
-	}
-
-	return nil
-}
-
-// ValidateAddress validates address (optional field)
-func validateAddress(address string) error {
-	if len(address) > 256 {
-		return errors.New("address cannot exceed 256 characters")
-	}
-
-	return nil
-}
-
 // ValidateCreateProfileInput validates the input dto for creating a new profile with the following criteria:
 //   - FirstName: Must be alphabetic and between 1 and 64 characters long.
 //   - LastName: Must be alphabetic, may contain spaces, and be between 1 and 128 characters long.
@@ -149,6 +73,86 @@ func ValidateCreateProfileInput(input domain.NewProfileReqDTO) lib.APIError {
 
 	if errs != nil {
 		return lib.BadRequestError(errs.Error())
+	}
+
+	return nil
+}
+
+// validateEmail checks if input Must match the specified regex pattern EmailRegex.
+func validateEmail(email string) error {
+	if matched := regexp.MustCompile(EmailRegex).MatchString(email); !matched {
+		return fmt.Errorf("invalid email, you entered %s", email)
+	}
+
+	return nil
+}
+
+// validatePassword checks password must be at least 8 characters long and no more than 32 characters
+func validatePassword(password string) error {
+	if len(password) < 8 || len(password) > 32 {
+		return errors.New("password must be at least 8 characters long and no more than 32 characters")
+	}
+
+	return nil
+}
+
+// validateUserName checks username must be between 7 and 64 characters long
+func validateUserName(userName string) error {
+	if len(userName) < 7 || len(userName) > 64 {
+		return errors.New("username must be between 7 and 64 characters long")
+	}
+
+	return nil
+}
+
+// validateStatus checks status must be one of: active, inactive, deleted
+func validateStatus(status string) error {
+	if matched := regexp.MustCompile(StatusRegex).MatchString(status); !matched && status != "" {
+		return errors.New("status must be one of: active, inactive, deleted")
+	}
+
+	return nil
+}
+
+func validateRole(role string) error {
+	if matched := regexp.MustCompile(RoleRegex).MatchString(role); !matched && role != "" {
+		return errors.New("role must be one of: user, admin, moderator, merchant")
+	}
+
+	return nil
+}
+
+// validateFirstName validates first name must be alphabetic and between 1 and 64 characters long
+func validateFirstName(firstName string) error {
+	if matched := regexp.MustCompile(`^[a-zA-Z]{1,64}$`).MatchString(firstName); !matched {
+		return errors.New("first name must be alphabetic and between 1 and 64 characters long")
+	}
+
+	return nil
+}
+
+// validateLastName validates last name must be alphabetic, may contain spaces, and be between 1 and 128 characters long
+func validateLastName(lastName string) error {
+	if matched := regexp.MustCompile(`^[a-zA-Z\s]{1,128}$`).MatchString(lastName); !matched {
+		return errors.New("last name must be alphabetic, may contain spaces, and be between 1 and 128 characters long")
+	}
+
+	return nil
+}
+
+// validateGender validates gender must be one of: male, female, other
+func validateGender(gender string) error {
+	if matched := regexp.MustCompile(`^(male|female|other)$`).MatchString(gender); !matched {
+		return errors.New("gender must be one of: male, female, other")
+	}
+
+	return nil
+}
+
+// validateAddress validates address (optional field) and address cannot exceed 256 characters
+func validateAddress(address string) error {
+	if len(address) > 256 {
+		return errors.New("address cannot exceed 256 characters")
 	}
 
 	return nil
