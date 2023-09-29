@@ -17,7 +17,7 @@ type User struct {
 	UpdatedAt  time.Time
 }
 
-type UserProfile struct {
+type Profile struct {
 	FirstName string
 	LastName  string
 	Gender    string

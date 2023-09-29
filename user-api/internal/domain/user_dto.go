@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -26,18 +25,18 @@ type NewUserReqDTO struct {
 	Role   string `binding:"-" json:"role"`
 }
 
-type UserProfileRespDTO struct {
-	FirstName string         `binding:"required" json:"firstName"`
-	LastName  string         `binding:"required" json:"lastName"`
-	Gender    string         `binding:"required" json:"gender"`
-	Address   sql.NullString `binding:"-"        json:"address,omitempty"`
-	CreatedAt time.Time      `binding:"-"        json:"createdAt"`
-	UpdatedAt time.Time      `binding:"-"        json:"updatedAt"`
+type ProfileRespDTO struct {
+	FirstName string    `binding:"required" json:"firstName"`
+	LastName  string    `binding:"required" json:"lastName"`
+	Gender    string    `binding:"required" json:"gender"`
+	Address   string    `binding:"-"        json:"address,omitempty"`
+	CreatedAt time.Time `binding:"-"        json:"createdAt"`
+	UpdatedAt time.Time `binding:"-"        json:"updatedAt"`
 }
 
-type NewUserProfileReqDTO struct {
-	FirstName string         `binding:"required" json:"firstName"`
-	LastName  string         `binding:"required" json:"lastName"`
-	Gender    string         `binding:"required" json:"gender"`
-	Address   sql.NullString `binding:"-"        json:"address,omitempty"`
+type NewProfileReqDTO struct {
+	FirstName string `binding:"required" json:"firstName"`
+	LastName  string `binding:"required" json:"lastName"`
+	Gender    string `binding:"required" json:"gender"`
+	Address   string `binding:"-"        json:"address,omitempty"`
 }
