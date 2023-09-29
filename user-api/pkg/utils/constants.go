@@ -19,5 +19,6 @@ const (
 	UserRoleModerator = "moderator"
 	UserRoleMerchant  = "merchant"
 
-	TimeoutCreateUser = 200 * time.Millisecond
+	TimeoutCreateUser        = 200 * time.Millisecond
+	TimeoutCreateUserProfile = 200 * time.Millisecond
 )

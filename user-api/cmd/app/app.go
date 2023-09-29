@@ -13,14 +13,16 @@ import (
 )
 
 func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
-	gin.SetMode(os.Getenv("GIN_MODE"))
+	if os.Getenv("GIN_MODE") != "" {
+		gin.SetMode(os.Getenv("GIN_MODE"))
+	}
 
 	var r = gin.New()
 	srv.Handler = r
 
 	// wire up the handler
 	userRepositoryDB := domain.NewUserRepoDB(dbClient, l)
-	uh := UserHandlers{service.NewUserService(userRepositoryDB)}
+	uh := UserHandlers{service.NewUserService(userRepositoryDB, l)}
 
 	// route url mappings
 	setUsersAPIRoutes(r, uh)
@@ -37,5 +39,6 @@ func setUsersAPIRoutes(r *gin.Engine, uh UserHandlers) {
 	userRoutes := r.Group("/users")
 	{
 		userRoutes.POST("", uh.NewUserHandler)
+		userRoutes.POST("/:user_id", uh.NewUserProfileHandler)
 	}
 }

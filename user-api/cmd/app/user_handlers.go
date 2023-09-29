@@ -43,3 +43,39 @@ func (uh *UserHandlers) NewUserHandler(c *gin.Context) {
 		"user": &res,
 	})
 }
+
+func (uh *UserHandlers) NewUserProfileHandler(c *gin.Context) {
+	userID := c.Param("user_id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user id can't be empty"})
+		return
+	}
+
+	var newProfileReq domain.NewProfileReqDTO
+	if err := c.ShouldBindJSON(&newProfileReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	if gin.Mode() == gin.ReleaseMode {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, utils.TimeoutCreateUserProfile)
+
+		defer cancel()
+	}
+
+	res, apiErr := uh.s.NewProfile(ctx, userID, newProfileReq)
+	if apiErr != nil {
+		c.JSON(apiErr.Code(), gin.H{
+			"error": apiErr.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"userProfile": &res,
+	})
+}
