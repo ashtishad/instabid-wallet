@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	authAPI "github.com/ashtishad/instabid-wallet/auth-api/cmd/app"
 	"github.com/ashtishad/instabid-wallet/lib"
 	userAPI "github.com/ashtishad/instabid-wallet/user-api/cmd/app"
 )
@@ -36,6 +37,15 @@ func main() {
 		wg.Done()
 	}()
 
+	authServer := lib.InitServerConfig("AUTH_API_PORT")
+
+	wg.Add(1)
+
+	go func() {
+		authAPI.Start(authServer, dbClient, l)
+		wg.Done()
+	}()
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
@@ -43,9 +53,10 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 
-	wg.Add(1)
+	wg.Add(2)
 
 	go lib.GracefulShutdown(ctx, userServer, &wg, "User")
+	go lib.GracefulShutdown(ctx, userServer, &wg, "Auth")
 
 	wg.Wait()
 }
