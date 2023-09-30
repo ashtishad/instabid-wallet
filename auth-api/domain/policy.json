@@ -1,0 +1,4 @@
+{
+  "admin": ["/users", "/users/:user_id"],
+  "user": ["/users/:user_id"]
+}
