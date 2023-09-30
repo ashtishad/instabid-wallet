@@ -65,12 +65,14 @@ func SanityCheck(l *slog.Logger) {
 	defaultEnvVars := map[string]string{
 		"API_HOST":      "127.0.0.1",
 		"USER_API_PORT": "8000",
+		"AUTH_API_PORT": "8001",
 		"DB_USER":       "postgres",
 		"DB_PASSWD":     "postgres",
 		"DB_HOST":       "127.0.0.1",
 		"DB_PORT":       "5432",
 		"DB_NAME":       "instabid",
 		"GIN_MODE":      "debug",
+		"HMACSecret":    "hmacSampleSecret",
 	}
 
 	for key, defaultValue := range defaultEnvVars {
