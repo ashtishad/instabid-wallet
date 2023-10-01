@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 
 	"github.com/ashtishad/instabid-wallet/lib"
@@ -12,22 +11,22 @@ import (
 // ValidateCreateUserInput validates the input dto for creating a new user with the following criteria:
 //   - Email: Must match the specified regex pattern (EmailRegex).
 //   - Password: Must be at least 8 characters long and no more than 32 characters.
-//   - UserName: Must be between 7 and 64 characters long.
+//   - Username: Must be 7-64 alphanumeric characters with no spaces.
 //   - Status: If provided, must be one of 'active', 'inactive', or 'deleted'.
 //   - Role: If provided, must be one of 'user', 'admin', 'moderator', or 'merchant'.
 func ValidateCreateUserInput(input domain.NewUserReqDTO) lib.APIError {
 	var errs error
 	var err error
 
-	if err = validateEmail(input.Email); err != nil {
+	if err = lib.ValidateEmail(input.Email); err != nil {
 		errs = errors.Join(errs, err)
 	}
 
-	if err = validatePassword(input.Password); err != nil {
+	if err = lib.ValidatePassword(input.Password); err != nil {
 		errs = errors.Join(errs, err)
 	}
 
-	if err = validateUserName(input.UserName); err != nil {
+	if err = lib.ValidateUserName(input.UserName); err != nil {
 		errs = errors.Join(errs, err)
 	}
 
@@ -73,33 +72,6 @@ func ValidateCreateProfileInput(input domain.NewProfileReqDTO) lib.APIError {
 
 	if errs != nil {
 		return lib.BadRequestError(errs.Error())
-	}
-
-	return nil
-}
-
-// validateEmail checks if input Must match the specified regex pattern EmailRegex.
-func validateEmail(email string) error {
-	if matched := regexp.MustCompile(EmailRegex).MatchString(email); !matched {
-		return fmt.Errorf("invalid email, you entered %s", email)
-	}
-
-	return nil
-}
-
-// validatePassword checks password must be at least 8 characters long and no more than 32 characters
-func validatePassword(password string) error {
-	if len(password) < 8 || len(password) > 32 {
-		return errors.New("password must be at least 8 characters long and no more than 32 characters")
-	}
-
-	return nil
-}
-
-// validateUserName checks username must be between 7 and 64 characters long
-func validateUserName(userName string) error {
-	if len(userName) < 7 || len(userName) > 64 {
-		return errors.New("username must be between 7 and 64 characters long")
 	}
 
 	return nil
