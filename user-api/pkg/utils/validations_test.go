@@ -41,14 +41,14 @@ func TestValidateCreateUserInput(t *testing.T) {
 		{
 			name: "Empty username",
 			input: domain.NewUserReqDTO{
-				UserName: "",
+				UserName: "testUsr@",
 				Password: "password123",
 				Email:    "email@test.com",
 				Status:   "active",
 				Role:     "user",
 			},
 			wantErr: true,
-			errText: "username must be between 7 and 64 characters long",
+			errText: "invalid username: must be 7-64 alphanumeric characters with no spaces",
 		},
 		{
 			name: "Short password",
@@ -96,7 +96,7 @@ func TestValidateCreateUserInput(t *testing.T) {
 				Role:     "alien",
 			},
 			wantErr: true,
-			errText: "invalid email, you entered invalid-email\npassword must be at least 8 characters long and no more than 32 characters\nusername must be between 7 and 64 characters long\nstatus must be one of: active, inactive, deleted\nrole must be one of: user, admin, moderator, merchant",
+			errText: "invalid email, you entered invalid-email\npassword must be at least 8 characters long and no more than 32 characters\ninvalid username: must be 7-64 alphanumeric characters with no spaces\nstatus must be one of: active, inactive, deleted\nrole must be one of: user, admin, moderator, merchant",
 		},
 	}
 
