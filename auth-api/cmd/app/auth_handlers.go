@@ -22,7 +22,6 @@ func (h AuthHandlers) LoginHandler(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	// ToDo: Validate request
 	switch {
 	case req.Email != "":
 		ctx = context.WithValue(ctx, domain.UserCredentialKey, domain.UserCredentialEmail)
@@ -48,7 +47,7 @@ func (h AuthHandlers) LoginHandler(c *gin.Context) {
 	c.SetCookie("authorization", res.AccessToken, 3600*24, "", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
-		"accessToken": &res.AccessToken,
-		"user":        &res.Login,
+		"token": &res.AccessToken,
+		"user":  &res.Login,
 	})
 }

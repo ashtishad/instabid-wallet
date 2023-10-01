@@ -26,6 +26,10 @@ func (s DefaultAuthService) Login(ctx context.Context, req domain.LoginRequest) 
 	var apiErr lib.APIError
 	var login *domain.Login
 
+	if apiErr = validateLoginRequest(req); apiErr != nil {
+		return nil, apiErr
+	}
+
 	login, apiErr = s.repo.FindByCredential(ctx, req)
 	if apiErr != nil {
 		return nil, apiErr
