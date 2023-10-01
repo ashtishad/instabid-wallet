@@ -7,6 +7,6 @@ run:
 	export DB_HOST=127.0.0.1 \
 	export DB_PORT=5432 \
 	export DB_NAME=instabid \
-	export GIN_MODE= debug \
-	export HMACSecret = hmacSampleSecret \
-	&& go run main.go
+	export GIN_MODE=debug \
+	export HMACSecret=hmacSampleSecret \
+&& go run main.go
