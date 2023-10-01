@@ -23,9 +23,8 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 	srv.Handler = r
 
 	// Wire up the handler for auth API
-	var rp domain.RolePermissions // ToDO: get from policy json
 	authRepositoryDB := domain.NewAuthRepoDB(dbClient, l)
-	ah := AuthHandlers{service.NewAuthService(authRepositoryDB, rp, l)}
+	ah := AuthHandlers{service.NewAuthService(authRepositoryDB, l)}
 
 	// Route URL mappings for the auth API
 	r.POST("/login", ah.LoginHandler)

@@ -13,13 +13,12 @@ type AuthService interface {
 }
 
 type DefaultAuthService struct {
-	repo            domain.AuthRepository
-	rolePermissions domain.RolePermissions
-	l               *slog.Logger
+	repo domain.AuthRepository
+	l    *slog.Logger
 }
 
-func NewAuthService(repo domain.AuthRepository, rp domain.RolePermissions, l *slog.Logger) DefaultAuthService {
-	return DefaultAuthService{repo: repo, rolePermissions: rp, l: l}
+func NewAuthService(repo domain.AuthRepository, l *slog.Logger) DefaultAuthService {
+	return DefaultAuthService{repo: repo, l: l}
 }
 
 func (s DefaultAuthService) Login(ctx context.Context, req domain.LoginRequest) (*domain.LoginResponse, lib.APIError) {
