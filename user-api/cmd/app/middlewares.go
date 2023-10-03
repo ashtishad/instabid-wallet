@@ -32,7 +32,7 @@ func validateJWT(l *slog.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr, err := extractToken(c)
 		if err != nil {
-			l.Error(err.Error())
+			l.Error("unable to extract token", "err", err.Error())
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 
@@ -43,32 +43,35 @@ func validateJWT(l *slog.Logger) gin.HandlerFunc {
 		token, err = parseAndValidateToken(tokenStr)
 
 		if err != nil {
-			l.Error("token validation failed:", err)
+			l.Error("token validation failed:", "err", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 
 			return
 		}
 
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			var user *domain.AuthorizedUser
-			user, err = getAuthorizedUserFromClaims(claims)
-
-			if err != nil {
-				l.Error(err.Error())
-				c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-				c.Abort()
-
-				return
-			}
-
-			c.Set("authorizedUserRequest", user)
-			c.Next()
-		} else {
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok || !token.Valid {
 			l.Error(ErrTokenValidationFailed.Error())
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
+
+			return
 		}
+
+		var user *domain.AuthorizedUser
+		user, err = getAuthorizedUserFromClaims(claims)
+
+		if err != nil {
+			l.Error("unable to get authorized user from claims", "err", err.Error())
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			c.Abort()
+
+			return
+		}
+
+		c.Set("authorizedUserRequest", user)
+		c.Next()
 	}
 }
 
