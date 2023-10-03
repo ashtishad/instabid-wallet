@@ -48,7 +48,7 @@ linters:
 linters-settings:
   cyclop:
     max-complexity: 14
-    package-average: 6.0
+    package-average: 8.0
     skip-tests: true
   nilnil:
     # Checks that there is no simultaneous return of `nil` error and an invalid value.

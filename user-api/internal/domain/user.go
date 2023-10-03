@@ -25,3 +25,12 @@ type Profile struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+// AuthorizedUser will be used to map jwt claims to this struct
+type AuthorizedUser struct {
+	UserID   string
+	UserName string
+	Email    string
+	Status   string
+	Role     string
+}

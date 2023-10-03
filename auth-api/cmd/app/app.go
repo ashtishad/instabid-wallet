@@ -28,6 +28,7 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 
 	// Route URL mappings for the auth API
 	r.POST("/login", ah.LoginHandler)
+	r.GET("/verify", ah.VerifyHandler)
 
 	// Start the server
 	go func() {
