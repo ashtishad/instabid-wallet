@@ -42,10 +42,6 @@ func (h AuthHandlers) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	// ToDO: Either set cookie or send token in payload
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("authorization", res.AccessToken, 3600*24, "", "", false, true)
-
 	c.JSON(http.StatusOK, gin.H{
 		"token": &res.AccessToken,
 		"user":  &res.Login,
