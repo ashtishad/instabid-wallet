@@ -37,7 +37,7 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 
 func setUsersAPIRoutes(r *gin.Engine, uh UserHandlers, l *slog.Logger) {
 	userRoutes := r.Group("/users")
-	userRoutes.Use(validateJWT(l))
+	userRoutes.Use(validateJWTMiddleware(l))
 	{
 		userRoutes.POST("", uh.CreateUserHandler)
 		userRoutes.POST("/:user_id", uh.CreateUserProfileHandler)
