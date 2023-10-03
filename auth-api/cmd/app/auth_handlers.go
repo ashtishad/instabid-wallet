@@ -11,6 +11,14 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+const (
+	queryParamToken     = "token"
+	mapKeyRole          = "Role"
+	queryParamRouteName = "routeName"
+	queryParamUserID    = "userId"
+	mapKeyUserID        = "UserID"
+)
+
 type AuthHandlers struct {
 	service service.AuthService
 }
@@ -50,9 +58,8 @@ func (ah AuthHandlers) LoginHandler(c *gin.Context) {
 	})
 }
 
-// VerifyHandler is a function to verify token and return user claims
 func (ah AuthHandlers) VerifyHandler(c *gin.Context) {
-	tokenStr := c.Query("token")
+	tokenStr := c.Query(queryParamToken)
 	if tokenStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Token required"})
 		return
@@ -67,6 +74,30 @@ func (ah AuthHandlers) VerifyHandler(c *gin.Context) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	// Extract role and userId from claims
+	role, roleOk := claims[mapKeyRole].(string)
+	userID, userIDOk := claims[mapKeyUserID].(string)
+
+	if !roleOk || !userIDOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Role or UserId not found in token"})
+		return
+	}
+
+	routeName := c.Query(queryParamRouteName)
+
+	// Check role-based permissions
+	if !domain.Permissions.IsAuthorizedFor(role, routeName) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You don't have permission to access this resource"})
+		return
+	}
+
+	// Check userId-based permissions if the path includes userId
+	pathUserID := c.Query(queryParamUserID)
+	if pathUserID != "" && pathUserID != userID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You don't have permission to access resources for another user"})
 		return
 	}
 

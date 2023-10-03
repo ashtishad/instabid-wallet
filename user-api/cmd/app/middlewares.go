@@ -39,7 +39,15 @@ func validateJWTMiddleware(l *slog.Logger) gin.HandlerFunc {
 			return
 		}
 
-		claims, err := jwtutils.VerifyTokenWithAuthAPI(tokenStr)
+		routeName := fmt.Sprintf("%s:%s", c.Request.Method, c.FullPath())
+
+		var pathUserID string
+		if c.Param("user_id") != "" {
+			pathUserID = c.Param("user_id")
+		}
+
+		claims, err := jwtutils.VerifyTokenWithAuthAPI(tokenStr, routeName, pathUserID)
+
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()

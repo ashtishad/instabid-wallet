@@ -118,49 +118,70 @@ func TestBuildVerifyURL(t *testing.T) {
 	})
 
 	tests := []struct {
-		name     string
-		tokenStr string
-		host     string
-		port     string
-		scheme   string
-		wantURL  string
-		wantErr  error
+		name       string
+		tokenStr   string
+		routeName  string
+		pathUserID string
+		host       string
+		port       string
+		scheme     string
+		wantURL    string
+		wantErr    error
 	}{
 		{
-			name:     "Valid",
-			tokenStr: "token",
-			host:     "localhost",
-			port:     "8080",
-			scheme:   "http",
-			wantURL:  "http://localhost:8080/verify?token=token",
-			wantErr:  nil,
+			name:       "Valid",
+			tokenStr:   "token",
+			routeName:  "POST:/users",
+			pathUserID: "123",
+			host:       "localhost",
+			port:       "8080",
+			scheme:     "http",
+			wantURL:    "http://localhost:8080/verify?routeName=POST%3A%2Fusers&token=token&userId=123",
+			wantErr:    nil,
 		},
 		{
-			name:     "EmptyToken",
-			tokenStr: "",
-			host:     "localhost",
-			port:     "8080",
-			scheme:   "http",
-			wantURL:  "",
-			wantErr:  ErrEmptyToken,
+			name:       "EmptyToken",
+			tokenStr:   "",
+			routeName:  "POST:/users",
+			pathUserID: "123",
+			host:       "localhost",
+			port:       "8080",
+			scheme:     "http",
+			wantURL:    "",
+			wantErr:    ErrEmptyToken,
 		},
 		{
-			name:     "MissingHost",
-			tokenStr: "token",
-			host:     "",
-			port:     "8080",
-			scheme:   "http",
-			wantURL:  "",
-			wantErr:  ErrEmptyEnvVars,
+			name:       "EmptyRouteName",
+			tokenStr:   "token",
+			routeName:  "",
+			pathUserID: "123",
+			host:       "localhost",
+			port:       "8080",
+			scheme:     "http",
+			wantURL:    "",
+			wantErr:    ErrEmptyRouteName,
 		},
 		{
-			name:     "InvalidScheme",
-			tokenStr: "token",
-			host:     "localhost",
-			port:     "8080",
-			scheme:   "",
-			wantURL:  "",
-			wantErr:  ErrEmptyEnvVars,
+			name:       "MissingHost",
+			tokenStr:   "token",
+			routeName:  "POST:/users",
+			pathUserID: "123",
+			host:       "",
+			port:       "8080",
+			scheme:     "http",
+			wantURL:    "",
+			wantErr:    ErrEmptyEnvVars,
+		},
+		{
+			name:       "InvalidScheme",
+			tokenStr:   "token",
+			routeName:  "POST:/users",
+			pathUserID: "123",
+			host:       "localhost",
+			port:       "8080",
+			scheme:     "",
+			wantURL:    "",
+			wantErr:    ErrEmptyEnvVars,
 		},
 	}
 
@@ -175,7 +196,7 @@ func TestBuildVerifyURL(t *testing.T) {
 			if err := os.Setenv("API_SCHEME", tt.scheme); err != nil {
 				t.Fatalf("Failed to set API_SCHEME: %v", err)
 			}
-			gotURL, err := buildVerifyURL(tt.tokenStr)
+			gotURL, err := buildVerifyURL(tt.tokenStr, tt.routeName, tt.pathUserID)
 
 			if tt.wantErr != nil {
 				if err == nil || !errors.Is(err, tt.wantErr) {

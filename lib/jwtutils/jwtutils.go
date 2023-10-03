@@ -12,11 +12,12 @@ import (
 )
 
 var (
-	HMACSecret      = []byte(os.Getenv("HMACSecret"))
-	ErrUnauthorized = errors.New("unauthorized")
-	ErrEmptyToken   = errors.New("token cannot be empty")
-	ErrEmptyEnvVars = errors.New("API_HOST, AUTH_API_PORT, or API_SCHEME cannot be empty")
-	ErrInvalidURL   = errors.New("could not build a valid URL")
+	HMACSecret        = []byte(os.Getenv("HMACSecret"))
+	ErrUnauthorized   = errors.New("unauthorized")
+	ErrEmptyToken     = errors.New("token cannot be empty")
+	ErrEmptyEnvVars   = errors.New("API_HOST, AUTH_API_PORT, or API_SCHEME cannot be empty")
+	ErrInvalidURL     = errors.New("could not build a valid URL")
+	ErrEmptyRouteName = errors.New("routeName cannot be empty")
 )
 
 // ParseAndValidateToken parses a JWT token string and validates its signature.
@@ -53,8 +54,8 @@ func ParseAndValidateToken(tokenStr string) (*jwt.Token, error) {
 // The function takes a JWT token string as input and returns its claims if the token is valid.
 // If the token is invalid or an error occurs (e.g., failed to build the URL, HTTP request failure, etc.),
 // the function will return an error.
-func VerifyTokenWithAuthAPI(tokenStr string) (jwt.MapClaims, error) {
-	verifyURL, err := buildVerifyURL(tokenStr)
+func VerifyTokenWithAuthAPI(tokenStr string, routeName string, pathUserID string) (jwt.MapClaims, error) {
+	verifyURL, err := buildVerifyURL(tokenStr, routeName, pathUserID)
 	if err != nil {
 		return nil, fmt.Errorf("error building URL: %w", err)
 	}
@@ -87,10 +88,14 @@ func VerifyTokenWithAuthAPI(tokenStr string) (jwt.MapClaims, error) {
 // The function takes a JWT token string as an argument, and returns a formatted URL.
 // It uses environment variables "API_HOST" and "AUTH_API_PORT" to determine the APIs location.
 // It returns an error if it fails to construct a valid URL.
-// e.g: http://127.0.0.1:8001/verify?token=JWT_TOKEN
-func buildVerifyURL(tokenStr string) (string, error) {
+// e.g: http://127.0.0.1:8001/verify?token=JWT_TOKEN&routeName=?&userId=?
+func buildVerifyURL(tokenStr string, routeName string, pathUserID string) (string, error) {
 	if tokenStr == "" {
 		return "", ErrEmptyToken
+	}
+
+	if routeName == "" {
+		return "", ErrEmptyRouteName
 	}
 
 	apiHost := os.Getenv("API_HOST")
@@ -109,6 +114,8 @@ func buildVerifyURL(tokenStr string) (string, error) {
 
 	q := u.Query()
 	q.Add("token", tokenStr)
+	q.Add("routeName", routeName)
+	q.Add("userId", pathUserID)
 	u.RawQuery = q.Encode()
 
 	_, err := url.ParseRequestURI(u.String())
