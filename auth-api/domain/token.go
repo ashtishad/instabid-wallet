@@ -2,13 +2,11 @@ package domain
 
 import (
 	"log/slog"
-	"os"
 
 	"github.com/ashtishad/instabid-wallet/lib"
+	"github.com/ashtishad/instabid-wallet/lib/jwtutils"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var HMACSecret = os.Getenv("HMACSecret")
 
 type AuthToken struct {
 	token *jwt.Token
@@ -21,7 +19,7 @@ func NewAuthToken(claims AccessTokenClaims, l *slog.Logger) AuthToken {
 }
 
 func (t AuthToken) NewAccessToken() (string, lib.APIError) {
-	signedString, err := t.token.SignedString([]byte(HMACSecret))
+	signedString, err := t.token.SignedString(jwtutils.HMACSecret)
 	if err != nil {
 		t.l.Error("failed signing access token", "err", err.Error())
 		return "", lib.InternalServerError("cannot generate access token", err)
