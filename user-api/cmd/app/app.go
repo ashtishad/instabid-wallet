@@ -25,7 +25,7 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 	uh := UserHandlers{service.NewUserService(userRepositoryDB, l)}
 
 	// route url mappings
-	setUsersAPIRoutes(r, uh)
+	setUsersAPIRoutes(r, uh, l)
 
 	// start server
 	go func() {
@@ -35,8 +35,9 @@ func Start(srv *http.Server, dbClient *sql.DB, l *slog.Logger) {
 	}()
 }
 
-func setUsersAPIRoutes(r *gin.Engine, uh UserHandlers) {
+func setUsersAPIRoutes(r *gin.Engine, uh UserHandlers, l *slog.Logger) {
 	userRoutes := r.Group("/users")
+	userRoutes.Use(validateJWT(l))
 	{
 		userRoutes.POST("", uh.CreateUserHandler)
 		userRoutes.POST("/:user_id", uh.CreateUserProfileHandler)
