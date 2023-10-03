@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"errors"
+	"os"
 	"testing"
 	"time"
 
@@ -101,4 +102,96 @@ func createTokenWithWrongMethod() (string, error) {
 	}
 
 	return token.SignedString(privateKey)
+}
+
+func TestBuildVerifyURL(t *testing.T) {
+	t.Cleanup(func() {
+		if err := os.Unsetenv("API_HOST"); err != nil {
+			t.Errorf("Failed to unset API_HOST: %v", err)
+		}
+		if err := os.Unsetenv("AUTH_API_PORT"); err != nil {
+			t.Errorf("Failed to unset AUTH_API_PORT: %v", err)
+		}
+		if err := os.Unsetenv("API_SCHEME"); err != nil {
+			t.Errorf("Failed to unset API_SCHEME: %v", err)
+		}
+	})
+
+	tests := []struct {
+		name     string
+		tokenStr string
+		host     string
+		port     string
+		scheme   string
+		wantURL  string
+		wantErr  error
+	}{
+		{
+			name:     "Valid",
+			tokenStr: "token",
+			host:     "localhost",
+			port:     "8080",
+			scheme:   "http",
+			wantURL:  "http://localhost:8080/verify?token=token",
+			wantErr:  nil,
+		},
+		{
+			name:     "EmptyToken",
+			tokenStr: "",
+			host:     "localhost",
+			port:     "8080",
+			scheme:   "http",
+			wantURL:  "",
+			wantErr:  ErrEmptyToken,
+		},
+		{
+			name:     "MissingHost",
+			tokenStr: "token",
+			host:     "",
+			port:     "8080",
+			scheme:   "http",
+			wantURL:  "",
+			wantErr:  ErrEmptyEnvVars,
+		},
+		{
+			name:     "InvalidScheme",
+			tokenStr: "token",
+			host:     "localhost",
+			port:     "8080",
+			scheme:   "",
+			wantURL:  "",
+			wantErr:  ErrEmptyEnvVars,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := os.Setenv("API_HOST", tt.host); err != nil {
+				t.Fatalf("Failed to set API_HOST: %v", err)
+			}
+			if err := os.Setenv("AUTH_API_PORT", tt.port); err != nil {
+				t.Fatalf("Failed to set AUTH_API_PORT: %v", err)
+			}
+			if err := os.Setenv("API_SCHEME", tt.scheme); err != nil {
+				t.Fatalf("Failed to set API_SCHEME: %v", err)
+			}
+			gotURL, err := buildVerifyURL(tt.tokenStr)
+
+			if tt.wantErr != nil {
+				if err == nil || !errors.Is(err, tt.wantErr) {
+					t.Errorf("wanted error %v, got %v", tt.wantErr, err)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+
+			if gotURL != tt.wantURL {
+				t.Errorf("wanted URL %s, got %s", tt.wantURL, gotURL)
+			}
+		})
+	}
 }

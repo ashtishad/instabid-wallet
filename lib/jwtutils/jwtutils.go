@@ -14,6 +14,9 @@ import (
 var (
 	HMACSecret      = []byte(os.Getenv("HMACSecret"))
 	ErrUnauthorized = errors.New("unauthorized")
+	ErrEmptyToken   = errors.New("token cannot be empty")
+	ErrEmptyEnvVars = errors.New("API_HOST, AUTH_API_PORT, or API_SCHEME cannot be empty")
+	ErrInvalidURL   = errors.New("could not build a valid URL")
 )
 
 // ParseAndValidateToken parses a JWT token string and validates its signature.
@@ -86,15 +89,32 @@ func VerifyTokenWithAuthAPI(tokenStr string) (jwt.MapClaims, error) {
 // It returns an error if it fails to construct a valid URL.
 // e.g: http://127.0.0.1:8001/verify?token=JWT_TOKEN
 func buildVerifyURL(tokenStr string) (string, error) {
-	apiHost := os.Getenv("API_HOST")
-	authAPIPort := os.Getenv("AUTH_API_PORT")
-
-	rawURL := fmt.Sprintf("http://%s:%s/verify?token=%s", apiHost, authAPIPort, url.QueryEscape(tokenStr))
-
-	_, err := url.ParseRequestURI(rawURL)
-	if err != nil {
-		return "", fmt.Errorf("could not build a valid URL: %w", err)
+	if tokenStr == "" {
+		return "", ErrEmptyToken
 	}
 
-	return rawURL, nil
+	apiHost := os.Getenv("API_HOST")
+	authAPIPort := os.Getenv("AUTH_API_PORT")
+	apiScheme := os.Getenv("API_SCHEME")
+
+	if apiHost == "" || authAPIPort == "" || apiScheme == "" {
+		return "", ErrEmptyEnvVars
+	}
+
+	u := &url.URL{
+		Scheme: apiScheme,
+		Host:   fmt.Sprintf("%s:%s", apiHost, authAPIPort),
+		Path:   "/verify",
+	}
+
+	q := u.Query()
+	q.Add("token", tokenStr)
+	u.RawQuery = q.Encode()
+
+	_, err := url.ParseRequestURI(u.String())
+	if err != nil {
+		return "", fmt.Errorf("%w: %v", ErrInvalidURL, err)
+	}
+
+	return u.String(), nil
 }

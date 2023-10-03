@@ -1,4 +1,5 @@
 run:
+	export API_SCHEME=http \
 	export API_HOST=127.0.0.1 \
 	export USER_API_PORT=8000 \
 	export AUTH_API_PORT=8001 \

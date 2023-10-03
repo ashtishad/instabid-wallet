@@ -63,6 +63,7 @@ func InitDB(l *slog.Logger) *sql.DB {
 // If error happened during setting env variable, then logs error and exits application.
 func SanityCheck(l *slog.Logger) {
 	defaultEnvVars := map[string]string{
+		"API_SCHEME":    "http",
 		"API_HOST":      "127.0.0.1",
 		"USER_API_PORT": "8000",
 		"AUTH_API_PORT": "8001",
