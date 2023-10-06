@@ -83,6 +83,54 @@ app_helpers.go -> SanityCheck()
 
 <p align="right"><a href="#instabid-wallet">↑ Top</a></p>
 
+### Routes Planned
+
+#### Auth-API(:8001)
+
+* POST /login: Authenticate and log a user in and generate JWT access token.
+* GET /verify: Verify the user's authentication token.
+* POST /logout: Log out the currently authenticated user.
+* POST /reset-password: Reset the password for a given user.
+
+#### User-API(:8000)
+
+* GET /users: Retrieve a paginated list of users with their profiles, with optional filtering.
+* POST /users/: Register a new user.
+* GET /users/:user_id: Fetch details for a specific user by ID.
+* POST /users/:user_id: Create profile details for a specific user by ID.
+* PUT /users/:user_id: Update the details of a specific user by ID.
+* DELETE /users/:user_id: Delete a specific user by ID.
+* GET /users/:user_id/profile: Fetch the profile details of a specific user by ID.
+* PUT /users/:user_id/profile: Update the profile details of a specific user by ID.
+
+#### Wallet-API(:8002)
+
+* POST /users/:user_id/wallet: Create a new wallet for a specific user by ID.
+* GET /users/:user_id/wallet: Fetch the wallet details of a specific user by ID.
+* POST /users/:user_id/wallet/transfer: Transfer money from the wallet of a specific user.
+* GET /users/:user_id/wallet/transactions: Retrieve the transaction history for a specific user's wallet.
+
+#### Auction-API(:8003)
+
+* POST /auctions: Create a new auction.
+* GET /auctions: Retrieve a list of all auctions.
+* GET /auctions/:auction_id: Fetch details of a specific auction by ID.
+* POST /auctions/:auction_id/bid: Place a bid on a specific auction by ID.
+* GET /auctions/:auction_id/bids: Retrieve a list of bids for a specific auction by ID.
+
+#### Admin-API(:8004)
+
+* PUT /users/:user_id/role: Assign or modify the role of a specific user.
+* GET /users/inactive: Retrieve a list of all inactive users.
+* PUT /users/:user_id/activate: Activate a specific user by ID.
+* PUT /users/:user_id/deactivate: Deactivate a specific user by ID.
+
+#### MISC
+
+* GET /health (Health check endpoint for monitoring and maintenance.)
+
+<p align="right"><a href="#instabid-wallet">↑ Top</a></p>
+
 <!-- CONTACT -->
 
 ### Contact
